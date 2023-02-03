@@ -36,15 +36,15 @@
       ansible.builtin.lineinfile:
         path: /etc/zabbix/zabbix_agent2.conf
         search_string: 'Server=127.0.0.1'
-        line: {server}
+        line: "{{ server }}"
         owner: root
         group: root
 
     - name: Config zabbix_agent2.conf ServerActive
       ansible.builtin.lineinfile:
         path: /etc/zabbix/zabbix_agent2.conf
-        search_string: 'ServerActive=127.0.0.1:10051'
-        line: {serveractive}
+        search_string: 'ServerActive=127.0.0.1'
+        line: "{{ serveractive }}"
         owner: root
         group: root
 
@@ -52,10 +52,6 @@
       yum:
         name: zabbix-agent2
         state: present
-
-    - service:
-        name: zabbix-agent2
-        state: restarted
 
     - name: Ensure zabbix-agent2 is started and enabled
       service:
