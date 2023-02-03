@@ -1,0 +1,53 @@
+---
+- hosts: localhost
+  become: yes
+  
+  tasks:
+
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: /home/osboxes/zabbix-release-6.2-3.el7.noarch.rpm
+        dest: /home/osboxes/zabbix-release-6.2-3.el7.noarch.rpm
+        owner: osboxes
+        group: osboxes
+        mode: '0744'
+
+    - name: Install Zabbix Repo
+      ansible.builtin.yum:
+        name: /home/osboxes/zabbix-release-6.2-3.el7.noarch.rpm
+        state: present
+
+    - name: Install zabbix-agent2
+      yum:
+        name: zabbix-agent2
+        state: present
+
+    - name: Install zabbix-agent2-plugins
+      yum:
+        name: zabbix-agent2-plugin-*
+        state: present
+
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: /home/osboxes/foo.conf
+        dest: /etc/zabbix/foo.conf
+        owner: osboxes
+        group: osboxes
+        mode: '0744'
+
+    - name: Ensure zabbix-agent2 is installed
+      yum:
+        name: zabbix-agent2
+        state: present
+
+    - service:
+        name: zabbix-agent2
+        state: restarted
+
+    - name: Ensure zabbix-agent2 is started and enabled
+      service:
+        name: zabbix-agent2
+        state: started
+        enabled: yes
+
+        
