@@ -1,0 +1,18 @@
+---
+- hosts: "{{ varHosts }}"
+  become: true
+  remote_user: ec2-user
+
+  tasks:
+
+    - name: Install zabbix-agent2 on RHEL 7
+      include_tasks: zabbix-rhel7.yml
+      when: ansible_facts['distribution_major_version'] == "7"
+      tags:
+        - unbound
+
+    - name: Install zabbix-agent2 on RHEL 8
+      include_tasks: zabbix-rhel8.yml
+      when: ansible_facts['distribution_major_version'] == "8"
+      tags:
+        - unbound

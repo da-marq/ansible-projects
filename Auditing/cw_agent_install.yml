@@ -1,0 +1,18 @@
+---
+- hosts: "{{ varHosts }}"
+  become: true
+  remote_user: ec2-user
+
+  tasks:
+
+  - name: Install CloudWatch repo
+    ansible.builtin.command: rpm -Uvh https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm
+    ignore_errors: true
+
+  - name: Install CloudWatch Agent from rpm
+    ansible.builtin.yum:
+      name: https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm
+      state: present
+
+  - name: Start CloudWatch Agent
+    ansible.builtin.shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:AmazonCloudWatch-EC2AuditLogs -s
